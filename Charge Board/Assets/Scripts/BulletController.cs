@@ -7,9 +7,9 @@ public class BulletController : MonoBehaviour
 
 
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collision)
     {
-        if(collision.gameObject.tag == "Environment")
+        if(collision.tag == "Environment")
         {
 
             Debug.Log("destroy");
