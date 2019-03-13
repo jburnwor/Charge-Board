@@ -11,6 +11,8 @@ public class CharacterRotationController : MonoBehaviour
 
     public GunController theGun;
 
+    public Vector3 pointToLook;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +36,7 @@ public class CharacterRotationController : MonoBehaviour
 
             //make character look at the point
             transform.LookAt(new Vector3(pointToLook.x, transform.position.y, pointToLook.z));
+            pointToLook = new Vector3(pointToLook.x, transform.position.y, pointToLook.z);
         }
 
         if (Input.GetMouseButtonDown(0))

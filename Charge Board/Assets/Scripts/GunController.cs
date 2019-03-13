@@ -34,7 +34,7 @@ public class GunController : MonoBehaviour
                 shotCounter = timeBetweenShots;
                 Rigidbody newBullet = Instantiate(bullet, firePoint.position, firePoint.rotation);
                 newBullet.velocity = transform.forward * bulletSpeed + player.velocity;
-                Destroy(newBullet.gameObject, 3);
+                Destroy(newBullet.gameObject, 2);
             }
         }
         else
