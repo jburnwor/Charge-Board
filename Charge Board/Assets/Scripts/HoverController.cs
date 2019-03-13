@@ -32,8 +32,6 @@ public class HoverController : MonoBehaviour
     float time;
     float timerTime;
 
-    bool stopRot;
-
 
     // Start is called before the first frame update
     void Awake()
@@ -47,7 +45,6 @@ public class HoverController : MonoBehaviour
         rigidBody.maxAngularVelocity = maxVelocity;
 
         timerTime = 2f;
-        stopRot = false;
     }
 
     // Update is called once per frame
@@ -76,7 +73,6 @@ public class HoverController : MonoBehaviour
                     transform.LookAt(new Vector3(pointToLook.x, transform.position.y, pointToLook.z));
                     lookToPoint = new Vector3(pointToLook.x, transform.position.y, pointToLook.z);
                 }
-                GameManager.lockControls = true;
             }
             else
             {
@@ -96,7 +92,7 @@ public class HoverController : MonoBehaviour
         {
             //lock controls while the board is charging
             time += Time.deltaTime;
-            //Debug.Log(time);
+            Debug.Log(time);
             if (time >= timerTime)
             {
                 time = 0;
@@ -174,16 +170,13 @@ public class HoverController : MonoBehaviour
 
                 if (holdTime > 50)
                 {
-                    rigidBody.maxAngularVelocity = 40f;
-                    rigidBody.velocity = transform.forward * 40f;
-
-                }
-                else
-                {
-                    GameManager.lockControls = false;
+                    rigidBody.maxAngularVelocity = 20f;
+                    rigidBody.velocity = transform.forward * 20f;
+                    GameManager.lockControls = true;
+                    
                 }
 
-                
+
                 holdTime = 0;
             }
         }
