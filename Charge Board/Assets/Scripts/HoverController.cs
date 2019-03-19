@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HoverController : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class HoverController : MonoBehaviour
 
     public float holdTime;
     float maxVelocity = 5f;
+    float chargeVelocity = 20f;
 
     Camera mainCamera;
 
@@ -31,6 +33,10 @@ public class HoverController : MonoBehaviour
 
     float time;
     float timerTime;
+
+    public Image chargeBar;
+
+    public ParticleSystem chargedParticles;
 
 
     // Start is called before the first frame update
@@ -45,11 +51,16 @@ public class HoverController : MonoBehaviour
         rigidBody.maxAngularVelocity = maxVelocity;
 
         timerTime = 2f;
+
+        holdTime = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        chargeBar.fillAmount = (holdTime * 2)/100;
+
         if (!GameManager.lockControls)
         {
             if (Input.GetKey(KeyCode.LeftShift))
@@ -73,6 +84,8 @@ public class HoverController : MonoBehaviour
                     transform.LookAt(new Vector3(pointToLook.x, transform.position.y, pointToLook.z));
                     lookToPoint = new Vector3(pointToLook.x, transform.position.y, pointToLook.z);
                 }
+
+                GameManager.stopEnemies = true;
             }
             else
             {
@@ -92,13 +105,21 @@ public class HoverController : MonoBehaviour
         {
             //lock controls while the board is charging
             time += Time.deltaTime;
-            Debug.Log(time);
+            //Debug.Log(time);
             if (time >= timerTime)
             {
                 time = 0;
                 GameManager.lockControls = false;
+                GameManager.stopEnemies = false;
                 rigidBody.maxAngularVelocity = maxVelocity;
             }
+        }
+
+        //create particle when charge is ready
+        if(holdTime > 50 && !(holdTime > 55))
+        {
+            Debug.Log("charge particle");
+            Instantiate(chargedParticles, transform.position, Quaternion.identity);
         }
         
     }
@@ -124,7 +145,15 @@ public class HoverController : MonoBehaviour
 
         //add force from input
         rigidBody.AddRelativeForce(0f, 0f, force);
-        rigidBody.AddRelativeTorque(0f, torque, 0f);
+        if (!GameManager.lockControls)
+        {
+            rigidBody.AddRelativeTorque(0f, torque, 0f);
+        }
+        else
+        {
+            rigidBody.AddRelativeTorque(0f, 0f, 0f);
+        }
+        
 
         //set max speed
         if (rigidBody.velocity.magnitude > maxSpeed)
@@ -171,9 +200,14 @@ public class HoverController : MonoBehaviour
                 if (holdTime > 50)
                 {
                     rigidBody.maxAngularVelocity = 20f;
-                    rigidBody.velocity = transform.forward * 20f;
+                    //rigidBody.velocity = transform.forward * chargeVelocity;
+                    rigidBody.AddRelativeForce(0f, 0f, 1000f);
                     GameManager.lockControls = true;
-                    
+
+                }
+                else
+                {
+                    GameManager.stopEnemies = false;
                 }
 
 
@@ -183,4 +217,5 @@ public class HoverController : MonoBehaviour
         
         
     }
+
 }

@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GunController : MonoBehaviour
 {
 
     public bool isFiring;
 
-    public Rigidbody bullet;
+    public float gunCharge = 100;
+
+    public BulletController bullet;
     public float bulletSpeed;
 
     public float timeBetweenShots;
@@ -16,6 +19,8 @@ public class GunController : MonoBehaviour
     public Transform firePoint;
 
     Rigidbody player;
+
+    public Image gunChargeBar;
 
     // Start is called before the first frame update
     void Start()
@@ -26,20 +31,28 @@ public class GunController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isFiring)
+        if (!GameManager.stopEnemies)
         {
-            shotCounter -= Time.deltaTime;
-            if(shotCounter <= 0)
+            if (isFiring && gunCharge > 0)
             {
-                shotCounter = timeBetweenShots;
-                Rigidbody newBullet = Instantiate(bullet, firePoint.position, firePoint.rotation);
-                newBullet.velocity = transform.forward * bulletSpeed + player.velocity;
-                Destroy(newBullet.gameObject, 2);
+                gunChargeBar.fillAmount = gunCharge / 100;
+                shotCounter -= Time.deltaTime;
+                if (shotCounter <= 0)
+                {
+                    gunCharge -= 5;
+
+                    shotCounter = timeBetweenShots;
+                    BulletController newBullet = Instantiate(bullet, firePoint.position, firePoint.rotation) as BulletController;
+                    //newBullet.velocity = transform.forward * bulletSpeed + player.velocity;
+                    newBullet.speed = bulletSpeed;
+                    Destroy(newBullet.gameObject, 2);
+                }
+            }
+            else
+            {
+                shotCounter = 0;
             }
         }
-        else
-        {
-            shotCounter = 0;
-        }
+        
     }
 }

@@ -13,6 +13,7 @@ public class DeathAction : Action
 
     private void Death(StateController controller)
     {
+        
         Destroy(controller.gameObject);
         
     }

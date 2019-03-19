@@ -37,6 +37,8 @@ public class StateController : MonoBehaviour {
 
     [HideInInspector] public Rigidbody RB;
 
+    public ParticleSystem hit;
+
 
     void Awake () 
 	{
@@ -54,6 +56,14 @@ public class StateController : MonoBehaviour {
 
     void Update()
     {
+
+        if(health <= 0)
+        {
+            GameManager.enemiesLeft--;
+            Debug.Log(GameManager.enemiesLeft);
+
+            Destroy(this.gameObject);
+        }
  
         currrentState.UpdateState(this);
        
@@ -91,5 +101,28 @@ public class StateController : MonoBehaviour {
 
         health -= amount;
         tookDamage = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "PlayerBullet")
+        {
+            health -= 5f;
+
+            Instantiate(hit, transform.position, Quaternion.identity);
+        }
+        else if (other.tag == "Player")
+        {
+
+            if (!GameManager.lockControls)
+            {
+                
+            }
+            else
+            {
+
+            }
+            
+        }
     }
 }
